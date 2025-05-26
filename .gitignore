@@ -1,0 +1,13 @@
+.env
+__pycache__
+.venv/
+venv/
+env/
+.vscode/
+.idea/
+build/
+dist/
+*.log
+tmp/
+config.py
+.secrets

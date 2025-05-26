@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guessing Word Quiz Game</title>
+    <link rel="stylesheet" href="../static/css/styles.css" />
+    <link rel="icon" type="image/x-icon" href="" />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: auto;
+        margin: 0;
+        font-family: "Orbitron", sans-serif;
+        color: #e0e0e0;
+      }
+      #game-container {
+        max-width: 600px;
+        width: 100%;
+        padding: 30px;
+        box-sizing: border-box;
+        border: 1px solid #00ffff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.3),
+          0 0 40px rgba(255, 0, 255, 0.1);
+        background-color: rgba(10, 10, 25, 0.8);
+        backdrop-filter: blur(5px);
+        z-index: 10;
+        position: relative;
+      }
+      .centered {
+        text-align: center;
+      }
+      h1,
+      h2 {
+        color: #05d9e8;
+        text-shadow: 0 0 10px rgba(5, 217, 232, 0.7);
+        margin-bottom: 30px;
+        text-align: center;
+      }
+      input[type="text"] {
+        background-color: rgba(30, 30, 50, 0.8);
+        border: 2px solid #ff2a6d;
+        border-radius: 5px;
+        padding: 12px 15px;
+        color: white;
+        font-family: "Orbitron", sans-serif;
+        width: 100%;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+      }
+      input[type="text"]:focus {
+        outline: none;
+        box-shadow: 0 0 15px rgba(255, 42, 109, 0.5);
+        border-color: #ff00ff;
+      }
+      button {
+        background: linear-gradient(45deg, #ff2a6d, #05d9e8);
+        color: white;
+        border: none;
+        padding: 6px 15px;
+        margin: 10px 5px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: "Orbitron", sans-serif;
+        font-weight: bold;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        font-size: 16px;
+      }
+      button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(5, 217, 232, 0.4);
+      }
+      button:active {
+        transform: translateY(1px);
+      }
+      #step-2 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #step-2 button {
+        width: 80%;
+        margin-bottom: 10px;
+      }
+      #quiz-area {
+        text-align: center;
+      }
+      #question {
+        font-size: 18px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: rgba(255, 42, 109, 0.1);
+        border-left: 4px solid #ff2a6d;
+        border-radius: 5px;
+      }
+      #hint {
+        color: #05d9e8;
+        font-style: italic;
+      }
+      #timer {
+        font-weight: bold;
+        color: #ff2a6d;
+      }
+      #result {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 5px;
+        text-align: center;
+      }
+      .correct {
+        background-color: rgba(0, 255, 0, 0.2);
+        border: 1px solid #00ff00;
+        color: #00ff00;
+      }
+      .incorrect {
+        background-color: rgba(255, 0, 0, 0.2);
+        border: 1px solid #ff0000;
+        color: #ff0000;
+      }
+      .progress-container {
+        width: 100%;
+        height: 10px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        margin: 20px 0;
+        overflow: hidden;
+      }
+      .progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #05d9e8, #ff2a6d);
+        border-radius: 5px;
+        transition: width 0.5s ease;
+      }
+      .score-display {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        font-size: 16px;
+      }
+      .game-controls {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
+      .badge {
+        display: inline-block;
+        padding: 5px 10px;
+        background: linear-gradient(45deg, #ff2a6d, #05d9e8);
+        border-radius: 20px;
+        font-size: 12px;
+        margin-right: 5px;
+      }
+      .difficulty-selector {
+        display: flex;
+        justify-content: center;
+        margin: 15px 0;
+      }
+      .difficulty-btn {
+        padding: 8px 15px;
+        margin: 0 5px;
+        background-color: rgba(30, 30, 50, 0.8);
+        border: 1px solid #05d9e8;
+        color: #05d9e8;
+      }
+      .difficulty-btn.active {
+        background-color: rgba(5, 217, 232, 0.3);
+        color: white;
+      }
+      .stats {
+        display: flex;
+        justify-content: space-around;
+        margin: 10px 0px;
+      }
+      .stat-item {
+        text-align: center;
+      }
+      .stat-value {
+        font-size: 24px;
+        color: #ff2a6d;
+        font-weight: bold;
+      }
+      .stat-label {
+        font-size: 12px;
+        color: #05d9e8;
+      }
+      .hint-button {
+        background: rgba(0, 255, 255, 0.2);
+        border: 1px solid #05d9e8;
+        color: #05d9e8;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 20;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+      }
+      .modal-content {
+        background-color: rgba(30, 30, 50, 0.9);
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #05d9e8;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 500px;
+        box-shadow: 0 0 20px rgba(5, 217, 232, 0.5);
+      }
+      .close {
+        color: #ff2a6d;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      #options {
+        display: flex;
+        flex-direction: column;
+      }
+
+      @keyframes glowing {
+        0% {
+          box-shadow: 0 0 5px #05d9e8;
+        }
+        50% {
+          box-shadow: 0 0 20px #05d9e8, 0 0 30px rgba(255, 42, 109, 0.5);
+        }
+        100% {
+          box-shadow: 0 0 5px #05d9e8;
+        }
+      }
+      .glow-effect {
+        animation: glowing 2s infinite;
+      }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <button id="back-btn" onclick="goBackToCourseSelection()">🔙 Back</button>
+    <div id="game-container" class="glow-effect">
+      <h1>WordWhiz AI</h1>
+
+      <!-- Game Header Section -->
+      <div class="game-header" id="game-header" style="display: none">
+        <div class="progress-container">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="score-display">
+          <span>Question: <span id="question-counter">0/0</span></span>
+          <span>Score: <span id="score-counter">0</span></span>
+          <span>Time: <span id="time-counter">00:00</span></span>
+        </div>
+      </div>
+
+      <!-- Step 1: Enter Name -->
+      <div id="step-1" class="centered">
+        <input type="text" id="username" placeholder="Enter your name" />
+        <button onclick="nextStep(); setUsernameinLS()">Next</button>
+      </div>
+
+      <!-- Step 2: Select Subject -->
+      <div id="step-2" style="display: none">
+        <h2>Select a Course</h2>
+        <button onclick="selectCourse('computer_tech')">
+          Computer Technology
+        </button>
+        <button onclick="selectCourse('tool_die')">Tool & Die</button>
+        <button onclick="selectCourse('mechatronics')">Mechatronics</button>
+        <button onclick="selectCourse('electronics')">Electronics</button>
+        <button onclick="selectCourse('electricals')">Electricals</button>
+
+        <!-- Added difficulty selector -->
+        <div class="difficulty-selector">
+          <h3>Difficulty:</h3>
+          <button class="difficulty-btn active" data-difficulty="easy">
+            Easy
+          </button>
+          <button class="difficulty-btn" data-difficulty="medium">
+            Medium
+          </button>
+          <button class="difficulty-btn" data-difficulty="hard">Hard</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Quiz Area -->
+      <div id="quiz-area" style="display: none">
+        <!-- Added badges for category and difficulty -->
+        <div class="quiz-info">
+          <span class="badge" id="category-badge">Category</span>
+          <span class="badge" id="difficulty-badge">Difficulty</span>
+        </div>
+
+        <p id="question"></p>
+        <!-- <input type="text" placeholder="Your guess..." /> -->
+        <div id="options"></div>
+        <!-- <button class="hint-button" onclick="getHint()">Get Hint</button> -->
+        <!-- <p id="hint"></p> -->
+        <!-- <p id="timer"></p> -->
+
+        <!-- Added game stats -->
+        <!-- <div class="stats">
+          <div class="stat-item">
+            <div class="stat-value" id="correct-answers">0</div>
+            <div class="stat-label">Correct</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="wrong-answers">0</div>
+            <div class="stat-label">Wrong</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="accuracy">0%</div>
+            <div class="stat-label">Accuracy</div>
+          </div>
+        </div> -->
+
+        <!-- Added game controls -->
+        <div class="game-controls">
+          <button onclick="skipQuestion()">Skip</button>
+          <button onclick="toggleSound()">🔊 Sound</button>
+          <button onclick="showHelp()">Help</button>
+        </div>
+        <button onclick="submitAnswer()">Submit</button>
+      </div>
+
+      <!-- <div id="result"></div> -->
+    </div>
+
+    <!-- Added Help Modal -->
+    <div id="helpModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>How to Play</h2>
+        <p>1. Read the question displayed on the screen.</p>
+        <p>2. Type your answer in the input box.</p>
+        <p>3. Click submit or press Enter to check your answer.</p>
+        <p>4. You can use the "Get Hint" button if you need help.</p>
+        <p>5. Use "Skip" to move to the next question if you're stuck.</p>
+        <p>Good luck!</p>
+      </div>
+    </div>
+
+    <!-- Added Results Modal -->
+    <div id="resultsModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Quiz Results</h2>
+        <div class="final-stats">
+          <p>Total Questions: <span id="total-questions">0</span></p>
+          <p>Correct Answers: <span id="final-correct">0</span></p>
+          <p>Accuracy: <span id="final-accuracy">0%</span></p>
+          <!-- <p>Time Taken: <span id="total-time">00:00</span></p> -->
+        </div>
+        <button onclick="playAgain()">Play Again</button>
+        <button onclick="changeSubject()">Change Subject</button>
+        <button onclick="submitAnswer()">Submit</button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+    <div class="cyberpunk-background">
+      <div class="night-city-gradient"></div>
+      <div class="city-skyline"></div>
+      <div class="neon-grid"></div>
+      <div class="cyber-fog"></div>
+      <div class="neon-lights">
+        <div class="neon-light"></div>
+        <div class="neon-light"></div>
+        <div class="neon-light"></div>
+        <div class="neon-light"></div>
+      </div>
+      <div class="holo-billboards">
+        <div class="holo-billboard"></div>
+        <div class="holo-billboard"></div>
+        <div class="holo-billboard"></div>
+      </div>
+      <div class="data-streams">
+        <div class="data-stream"></div>
+        <div class="data-stream"></div>
+        <div class="data-stream"></div>
+        <div class="data-stream"></div>
+        <div class="data-stream"></div>
+        <div class="data-stream"></div>
+        <div class="data-stream"></div>
+        <div class="data-stream"></div>
+        <div class="data-stream"></div>
+      </div>
+      <div class="flying-vehicles">
+        <div class="vehicle"></div>
+        <div class="vehicle"></div>
+        <div class="vehicle"></div>
+      </div>
+      <div class="cyber-rain"></div>
+      <div class="glitch-effect"></div>
+      <div class="vignette"></div>
+    </div>
+
+    <script>
+      // Added JavaScript functionality to support the new UI features
+      function getHint() {
+        // Implementation would go in your main script.js
+        document.getElementById("hint").textContent =
+          "This is a hint for the current question...";
+      }
+
+      function skipQuestion() {
+        // Implementation would go in your main script.js
+        console.log("Question skipped");
+      }
+
+      function toggleSound() {
+        // Implementation would go in your main script.js
+        console.log("Sound toggled");
+      }
+
+      function showHelp() {
+        document.getElementById("helpModal").style.display = "block";
+      }
+
+      function closeModal() {
+        document.getElementById("helpModal").style.display = "none";
+        document.getElementById("resultsModal").style.display = "none";
+      }
+
+      function playAgain() {
+        closeModal();
+        // Implementation would go in your main script.js
+      }
+
+      function changeSubject() {
+        closeModal();
+        document.getElementById("quiz-area").style.display = "none";
+        document.getElementById("step-2").style.display = "block";
+      }
+
+      // Close modal when clicking outside of it
+      window.onclick = function (event) {
+        if (event.target.className === "modal") {
+          closeModal();
+        }
+      };
+
+      // Make input submit on Enter key
+      document
+        .getElementById("answer")
+        .addEventListener("keyup", function (event) {
+          if (event.key === "Enter") {
+            submitAnswer();
+          }
+        });
+
+      // Select difficulty buttons
+      const difficultyBtns = document.querySelectorAll(".difficulty-btn");
+      difficultyBtns.forEach((btn) => {
+        btn.addEventListener("click", function () {
+          difficultyBtns.forEach((b) => b.classList.remove("active"));
+          this.classList.add("active");
+        });
+      });
+    </script>
+    <script src="../static/js/script.js"></script>
+  </body>
+</html>
