@@ -54,7 +54,6 @@ function setUsernameinLS() {
   const usernameInput = document.getElementById("username");
   const name = usernameInput.value;
   localStorage.setItem("username", name);
-  console.log(localStorage.getItem("username"));
 }
 
 function nextStep() {
@@ -102,6 +101,11 @@ function fetchQuestion(course, difficulty, topics) {
       currentQuestionIndex = 0;
       userAnswers = [];
       showQuestion();
+
+      setTimeout(() => {
+        document.getElementById("quiz-area").style.display = "block";
+        document.getElementById("step-3").style.display = "none";
+      }, 3000);
     });
 }
 
@@ -119,38 +123,21 @@ function selectCourse(courseKey) {
   const subjects = subjectMap[selectedCourse] || [];
 
   document.getElementById("step-2").style.display = "none";
-  document.getElementById("quiz-area").style.display = "block";
+  document.getElementById("step-3").classList.remove("hide");
   document.getElementById("category-badge").textContent = selectedCourse;
-  document.getElementById("difficulty-badge").textContent = selectedDifficulty;
 
   // Store course and difficulty in localStorage
   localStorage.setItem("selectedCourse", selectedCourse);
-  localStorage.setItem("selectedDifficulty", selectedDifficulty);
+}
 
+function SetDifficulty(diff) {
+  selectedDifficulty = diff;
+  document.getElementById("difficulty-badge").textContent = selectedDifficulty;
+  localStorage.setItem("selectedDifficulty", selectedDifficulty);
   fetchQuestion(selectedCourse, selectedDifficulty);
 }
 
 if (timer) clearInterval(timer);
-
-fetch("/get_question", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    difficulty: difficulty,
-    topics: topics,
-  }),
-})
-  .then((res) => res.json())
-  .then((data) => {
-    if (data.error) {
-      alert(`Error: ${data.error}`);
-      return;
-    }
-    document.getElementById("question").innerText = data.question;
-    // document.getElementById("hint").innerText = `Hint: ${data.hint}`;
-    document.getElementById("answer").value = "";
-    startTimer();
-  });
 
 // Submit answer
 function submitAnswer() {

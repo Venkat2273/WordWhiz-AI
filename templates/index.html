@@ -196,7 +196,7 @@
         color: #05d9e8;
       }
       .modal {
-        display: none;
+        display: none !important;
         position: fixed;
         z-index: 20;
         left: 0;
@@ -222,6 +222,9 @@
         font-size: 28px;
         font-weight: bold;
         cursor: pointer;
+      }
+      .hide {
+        display: none;
       }
       #options {
         display: flex;
@@ -287,21 +290,35 @@
         <button onclick="selectCourse('mechatronics')">Mechatronics</button>
         <button onclick="selectCourse('electronics')">Electronics</button>
         <button onclick="selectCourse('electricals')">Electricals</button>
-
-        <!-- Added difficulty selector -->
-        <div class="difficulty-selector">
-          <h3>Difficulty:</h3>
-          <button class="difficulty-btn active" data-difficulty="easy">
-            Easy
-          </button>
-          <button class="difficulty-btn" data-difficulty="medium">
-            Medium
-          </button>
-          <button class="difficulty-btn" data-difficulty="hard">Hard</button>
-        </div>
       </div>
 
-      <!-- Step 3: Quiz Area -->
+      <!-- Step 3: Set difficulty -->
+      <div id="step-3" class="difficulty-selector hide">
+        <h4>Difficulty:</h4>
+        <button
+          class="difficulty-btn active"
+          data-difficulty="easy"
+          onclick="SetDifficulty('easy')"
+        >
+          Easy
+        </button>
+        <button
+          class="difficulty-btn"
+          data-difficulty="medium"
+          onclick="SetDifficulty('medium')"
+        >
+          Medium
+        </button>
+        <button
+          class="difficulty-btn"
+          data-difficulty="hard"
+          onclick="SetDifficulty('hard')"
+        >
+          Hard
+        </button>
+      </div>
+
+      <!-- Step 4: Quiz Area -->
       <div id="quiz-area" style="display: none">
         <!-- Added badges for category and difficulty -->
         <div class="quiz-info">
