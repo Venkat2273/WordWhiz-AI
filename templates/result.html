@@ -4,13 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quiz Results</title>
+    <link rel="stylesheet" href="../static//css//result.css" />
     <style>
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
-      
+
       html {
         height: 100%;
       }
@@ -18,7 +19,7 @@
       body {
         min-height: 100%;
         position: relative;
-        background-color: #f5f5f5;
+        /* background-color: #f5f5f5; */
       }
 
       .container {
@@ -44,7 +45,7 @@
         margin-bottom: 15px;
         padding: 20px;
         border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
       .correct-answer-item {
@@ -112,10 +113,10 @@
       <div id="quiz-detailed-results">
         <p>Loading results...</p>
       </div>
-      <div class="button-container">
-        <!-- <a href="/" class="leaderboard-button">Take Quiz Again</a>
+      <!-- <div class="button-container"> -->
+      <!-- <a href="/" class="leaderboard-button">Take Quiz Again</a>
         <a href="/leaderboard" class="leaderboard-button">View Leaderboard</a> -->
-      </div>
+      <!-- </div> -->
     </div>
     <script src="../static/js/resultsDisplay.js"></script>
   </body>

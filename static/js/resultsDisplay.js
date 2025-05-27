@@ -56,63 +56,67 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const quizResultsData = JSON.parse(storedResults);
         displayDetailedQuizResults(quizResultsData);
-        
+
         // Calculate score
-        const correctAnswers = quizResultsData.filter(item => item.selected === item.correct).length;
+        const correctAnswers = quizResultsData.filter(
+          (item) => item.selected === item.correct
+        ).length;
         const score = correctAnswers * 10; // 10 points per correct answer
-        
+
         // Get course and difficulty from localStorage
         const course = localStorage.getItem("selectedCourse") || "General";
         const difficulty = localStorage.getItem("selectedDifficulty") || "easy";
-        
+
         // Add a submit button instead of automatic submission
-        const submitButton = document.createElement('button');
-        submitButton.textContent = 'Submit to Leaderboard';
-        submitButton.className = 'submit-button';
+        const submitButton = document.createElement("button");
+        submitButton.textContent = "Submit to Leaderboard";
+        submitButton.className = "submit-button";
         submitButton.onclick = () => submitScore(score, course, difficulty);
         detailedResultsContainer.appendChild(submitButton);
-        
+
         // Clear the stored data only after manual submission
         localStorage.removeItem("quizResults");
         localStorage.removeItem("selectedCourse");
         localStorage.removeItem("selectedDifficulty");
       } catch (e) {
         console.error("Error parsing quiz results from localStorage:", e);
-        detailedResultsContainer.innerHTML = "<p>Could not load results. The data might be corrupted. Please try the quiz again.</p>";
+        detailedResultsContainer.innerHTML =
+          "<p>Could not load results. The data might be corrupted. Please try the quiz again.</p>";
       }
     } else {
-      detailedResultsContainer.innerHTML = "<p>No quiz results found. Please complete the quiz first!</p>";
+      detailedResultsContainer.innerHTML =
+        '<p>No quiz results found. <a href="/leaderboard">Please complete the quiz first!</a></p>';
     }
   }
 });
 
 // Update the submitScore function to handle the transition smoothly
 async function submitScore(score, course, difficulty) {
-    try {
-        const name = localStorage.getItem("username") || "Anonymous";
-        const response = await fetch('/submit_score', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: name,
-                score: score,
-                course: course,
-                difficulty: difficulty
-            })
-        });
-        
-        if (response.ok) {
-            // Smooth transition to leaderboard
-            window.location.href = "/leaderboard";
-        } else {
-            alert('Failed to submit score. Please try again.');
-        }
-    } catch (error) {
-        console.error('Error submitting score:', error);
-        alert('Failed to submit score. Please try again.');
+  try {
+    const name = localStorage.getItem("username") || "Anonymous";
+    const response = await fetch("/submit_score", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: name,
+        score: score,
+        course: course,
+        difficulty: difficulty,
+      }),
+    });
+
+    if (response.ok) {
+      // Smooth transition to leaderboard
+      window.location.href = "/leaderboard";
+    } else {
+      alert("Failed to submit score. Please try again.");
     }
+  } catch (error) {
+    console.error("Error submitting score:", error);
+    alert("Failed to submit score. Please try again.");
+  }
 }
 
 // Call this function after displaying the results

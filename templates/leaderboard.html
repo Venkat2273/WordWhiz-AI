@@ -1,111 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quiz Leaderboard</title>
-    
+    <link rel="stylesheet" href="../static//css//leader.css" />
 
     <!-- Bootstrap CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <style>
-        body {
-            background-color: #f5f5f5;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: auto;
-        }
+      body {
+        background-color: #f5f5f5;
+        padding: 20px;
+      }
+      .container {
+        max-width: 1200px;
+        margin: auto;
+      }
+      .fixed-back-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 999;
+      }
+      @media (max-width: 768px) {
         .fixed-back-button {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 999;
-}
-@media (max-width: 768px) {
-        .fixed-back-button {
-        position: static;
-        margin-bottom: 15px;
-        text-align: left;
-    }
-}
+          position: static;
+          margin-bottom: 15px;
+          text-align: left;
+        }
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <!-- Fixed Back to Home Button -->
     <div class="fixed-back-button">
-        <a href="/" class="btn btn-success">Back to Home</a>
+      <a href="/" class="btn btn-success">Back to Home</a>
     </div>
 
     <div class="container">
-        <h1 class="text-center mb-4">Quiz Leaderboard</h1>
+      <h1 class="text-center mb-4">Quiz Leaderboard</h1>
 
-        <div class="mb-3 text-center">
-            <select id="courseSelect" class="form-select w-auto d-inline-block">
-                <option value="Computer Technology">Computer Technology</option>
-                <option value="Tool & Die">Tool & Die</option>
-                <option value="Mechatronics">Mechatronics</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Electricals">Electricals</option>
-            </select>
-        </div>
+      <div class="mb-3 text-center">
+        <select id="courseSelect" class="form-select w-auto d-inline-block">
+          <option value="Computer Technology">Computer Technology</option>
+          <option value="Tool & Die">Tool & Die</option>
+          <option value="Mechatronics">Mechatronics</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Electricals">Electricals</option>
+        </select>
+      </div>
 
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover align-middle text-center">
-                <thead class="table-success">
-                    <tr>
-                        <th>Rank</th>
-                        <th>Name</th>
-                        <th>Score</th>
-                        <th>Difficulty</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboardBody">
-                    <!-- Dynamic content -->
-                </tbody>
-            </table>
-        </div>
+      <div class="table-responsive">
+        <table
+          class="table table-bordered table-hover align-middle text-center"
+        >
+          <thead class="table-success">
+            <tr>
+              <th>Rank</th>
+              <th>Name</th>
+              <th>Score</th>
+              <th>Difficulty</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody">
+            <!-- Dynamic content -->
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <script>
-        function fetchLeaderboard(course) {
-            fetch(`/get_leaderboard?course=${encodeURIComponent(course)}`)
-                .then(response => response.json())
-                .then(data => {
-                    const tbody = document.getElementById('leaderboardBody');
-                    tbody.innerHTML = '';
+      function fetchLeaderboard(course) {
+        fetch(`/get_leaderboard?course=${encodeURIComponent(course)}`)
+          .then((response) => response.json())
+          .then((data) => {
+            const tbody = document.getElementById("leaderboardBody");
+            tbody.innerHTML = "";
 
-                    if (data.success && data.leaderboard.length > 0) {
-                        data.leaderboard.forEach((entry, index) => {
-                            const date = new Date(entry.timestamp).toLocaleDateString();
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
+            if (data.success && data.leaderboard.length > 0) {
+              data.leaderboard.forEach((entry, index) => {
+                const date = new Date(entry.timestamp).toLocaleDateString();
+                const row = document.createElement("tr");
+                row.innerHTML = `
                                 <td>${index + 1}</td>
                                 <td>${entry.name}</td>
                                 <td>${entry.score}</td>
                                 <td>${entry.difficulty}</td>
                                 <td>${date}</td>
                             `;
-                            tbody.appendChild(row);
-                        });
-                    } else {
-                        tbody.innerHTML = `<tr><td colspan="5" class="text-center">No scores available for this course</td></tr>`;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching leaderboard:', error);
-                });
-        }
+                tbody.appendChild(row);
+              });
+            } else {
+              tbody.innerHTML = `<tr><td colspan="5" class="text-center">No scores available for this course</td></tr>`;
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching leaderboard:", error);
+          });
+      }
 
-        const courseSelect = document.getElementById('courseSelect');
-        fetchLeaderboard(courseSelect.value);
-        courseSelect.addEventListener('change', (e) => {
-            fetchLeaderboard(e.target.value);
-        });
+      const courseSelect = document.getElementById("courseSelect");
+      fetchLeaderboard(courseSelect.value);
+      courseSelect.addEventListener("change", (e) => {
+        fetchLeaderboard(e.target.value);
+      });
     </script>
-
-</body>
+  </body>
 </html>
