@@ -45,28 +45,29 @@ let selectedDifficulty = "easy";
 let timer = null;
 
 // Store initial data when page loads
-document.addEventListener('DOMContentLoaded', () => {
-    // Clear any old quiz data
-    localStorage.removeItem("quizResults");
+document.addEventListener("DOMContentLoaded", () => {
+  // Clear any old quiz data
+  localStorage.removeItem("quizResults");
 });
 
-function setUsernameinLS(){
-  const usernameInput = document.getElementById('username');
+function setUsernameinLS() {
+  const usernameInput = document.getElementById("username");
   const name = usernameInput.value;
-  localStorage.setItem('username',name);
-  console.log(localStorage.getItem('username'))
+  localStorage.setItem("username", name);
+  console.log(localStorage.getItem("username"));
 }
 
 function nextStep() {
-    const username = document.getElementById("username").value.trim();
-    if (username) {
-        // Store username in localStorage
-        localStorage.setItem("username", username);
-        document.getElementById("step-1").style.display = "none";
-        document.getElementById("step-2").style.display = "block";
-    } else {
-        alert("Please enter your name to continue.");
-    }
+  const username = document.getElementById("username").value.trim();
+  if (username) {
+    // Store username in localStorage
+    localStorage.setItem("username", username);
+    document.getElementById("step-1").style.display = "none";
+    document.getElementById("step-2").style.display = "block";
+    document.getElementById("back-btn").style.display = "block";
+  } else {
+    alert("Please enter your name to continue.");
+  }
 }
 
 // Handle difficulty selection
@@ -125,7 +126,7 @@ function selectCourse(courseKey) {
   // Store course and difficulty in localStorage
   localStorage.setItem("selectedCourse", selectedCourse);
   localStorage.setItem("selectedDifficulty", selectedDifficulty);
-  
+
   fetchQuestion(selectedCourse, selectedDifficulty);
 }
 
@@ -245,21 +246,21 @@ function showQuestion() {
   });
 }
 function selectAnswer(option) {
-    userAnswers.push({
-        questionText: questionsList[currentQuestionIndex].clue,
-        selected: option,
-        correct: questionsList[currentQuestionIndex].answer,
-    });
+  userAnswers.push({
+    questionText: questionsList[currentQuestionIndex].clue,
+    selected: option,
+    correct: questionsList[currentQuestionIndex].answer,
+  });
 
-    // If all 10 questions are answered
-    if (userAnswers.length >= 10) {
-        // Calculate score
-        const correct = userAnswers.filter(a => a.selected === a.correct).length;
-        const score = correct * 10;
-        
-        // Clear question area and show submit button
-        const quizArea = document.getElementById("quiz-area");
-        quizArea.innerHTML = `
+  // If all 10 questions are answered
+  if (userAnswers.length >= 10) {
+    // Calculate score
+    const correct = userAnswers.filter((a) => a.selected === a.correct).length;
+    const score = correct * 10;
+
+    // Clear question area and show submit button
+    const quizArea = document.getElementById("quiz-area");
+    quizArea.innerHTML = `
             <h2>Quiz Complete!</h2>
             <div class="quiz-summary">
                 <p>You have completed all 10 questions.</p>
@@ -267,49 +268,48 @@ function selectAnswer(option) {
             </div>
             <button onclick="submitQuiz()" class="submit-button">View Results</button>
         `;
-    } else if (currentQuestionIndex + 1 < questionsList.length) {
-        // Show next question
-        currentQuestionIndex++;
-        showQuestion();
-    }
+  } else if (currentQuestionIndex + 1 < questionsList.length) {
+    // Show next question
+    currentQuestionIndex++;
+    showQuestion();
+  }
 }
 
 // Add new function to handle quiz submission
 function submitQuiz() {
-    // Store the quiz results
-    localStorage.setItem("quizResults", JSON.stringify(userAnswers));
-    // Redirect to results page
-    window.location.href = "/result";
+  // Store the quiz results
+  localStorage.setItem("quizResults", JSON.stringify(userAnswers));
+  // Redirect to results page
+  window.location.href = "/result";
 }
 function submitToLeaderboard(score) {
-    const username = localStorage.getItem("username") || "Anonymous";
-    
-    fetch('/submit_score', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name: username,
-            score: score,
-            course: selectedCourse,
-            difficulty: selectedDifficulty
-        })
-    }).then(() => {
-        window.location.href = "/leaderboard";
-    });
+  const username = localStorage.getItem("username") || "Anonymous";
+
+  fetch("/submit_score", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: username,
+      score: score,
+      course: selectedCourse,
+      difficulty: selectedDifficulty,
+    }),
+  }).then(() => {
+    window.location.href = "/leaderboard";
+  });
 }
 // Remove or comment out the showResult function as it's no longer needed
 // function showResult() { ... }
-  let correct = userAnswers.filter((a) => a.selected === a.correct).length;
-  let total = userAnswers.length;
-  // alert(`Quiz Completed! \nCorrect Answers: ${correct}/${total}`);
+let correct = userAnswers.filter((a) => a.selected === a.correct).length;
+let total = userAnswers.length;
+// alert(`Quiz Completed! \nCorrect Answers: ${correct}/${total}`);
 
-  document.getElementById("resultsModal").style.display = "block";
-  document.getElementById("total-questions").innerText = total;
-  document.getElementById("final-correct").innerText = correct;
-  document.getElementById("final-accuracy").innerText = `${(
-    (correct / total) *
-    100
-  ).toFixed(2)}%`;
-
+document.getElementById("resultsModal").style.display = "block";
+document.getElementById("total-questions").innerText = total;
+document.getElementById("final-correct").innerText = correct;
+document.getElementById("final-accuracy").innerText = `${(
+  (correct / total) *
+  100
+).toFixed(2)}%`;
