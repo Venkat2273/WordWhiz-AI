@@ -104,7 +104,7 @@ function fetchQuestion(course, difficulty, topics) {
 
       setTimeout(() => {
         document.getElementById("quiz-area").style.display = "block";
-        document.getElementById("step-3").style.display = "none";
+        document.getElementById("step-3").classList.add("hide");
       }, 3000);
     });
 }
@@ -120,6 +120,7 @@ function selectCourse(courseKey) {
   };
 
   selectedCourse = courseMap[courseKey];
+  console.log("selected course is: ", selectedCourse);
   const subjects = subjectMap[selectedCourse] || [];
 
   document.getElementById("step-2").style.display = "none";
@@ -209,14 +210,14 @@ function goBackToCourseSelection() {
   questionsList = [];
   selectedCourse = "";
 
-  document.getElementById("quiz-area").style.display = "none";
+  document.getElementById("quiz-area").classList.add("hide");
   document.getElementById("step-2").style.display = "block";
-
-  document.getElementById("result").innerText = "";
-  // document.getElementById("hint").innerText = "";
-  document.getElementById("timer").innerText = "";
-  document.getElementById("question").innerText = "";
-  document.getElementById("answer").value = "";
+  document.getElementById("step-3").classList.add("hide");
+  document.getElementById("quiz-area").style.display = "none"; // document.getElementById("result").innerText = "";
+  // // document.getElementById("hint").innerText = "";
+  // document.getElementById("timer").innerText = "";
+  // document.getElementById("question").innerText = "";
+  // document.getElementById("answer").value = "";
 }
 function showQuestion() {
   const q = questionsList[currentQuestionIndex];
