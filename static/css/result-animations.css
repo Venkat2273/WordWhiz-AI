@@ -7,6 +7,10 @@ body {
     background: rgba(0, 0, 0, 0.3);
 }
 
+.submit-button:hover{
+    cursor: pointer;
+}
+
 @keyframes neonGlow {
     0% {
         text-shadow: 0 0 10px #00ffff,
@@ -52,11 +56,11 @@ body {
     opacity: 0;
 }
 
-#quiz-detailed-results li:hover {
+/* #quiz-detailed-results li:hover {
     animation: cardGlow 2s infinite;
     transform: translateY(-5px);
     background: rgba(255, 255, 255, 0.2);
-}
+} */
 
 .quiz-results-title {
     color: #00ffff;
@@ -126,7 +130,7 @@ body {
     backdrop-filter: blur(10px);
 }
 
-.leaderboard-button {
+.leaderboard-button, .submit-button {
     background: linear-gradient(135deg, #00ffff 0%, #0099ff 100%);
     color: #000;
     font-weight: bold;
@@ -137,7 +141,7 @@ body {
     animation: neonGlow 2s infinite;
 }
 
-.leaderboard-button:hover {
+.leaderboard-button:hover, .submit-button:hover {
     transform: scale(1.1);
     box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
 }

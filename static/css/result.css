@@ -1,40 +1,101 @@
+/* Core reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html {
+html, body {
   height: 100%;
+  font-family: "Space Grotesk", sans-serif;
+  background: #000;
+  color: #fff;
+  overflow-y: auto;
 }
 
-body {
-  min-height: 100vh;
-  font-family: "Arial", sans-serif;
+/* Background Effects */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 200%;
+  width: 200%;
+  background: radial-gradient(circle, #2a1038, #0a0a15);
+  transform: scale(1.2);
+  z-index: -2;
+  opacity: 0.4;
+  animation: bgScroll 20s linear infinite;
+  filter: blur(40px);
 }
 
+@keyframes bgScroll {
+  0% {
+    transform: scale(1.2) translateY(0);
+  }
+  100% {
+    transform: scale(1.2) translateY(-20%);
+  }
+}
+
+/* Main content */
 .container {
-  padding: 30px 20px;
+  padding: 40px 20px 140px;
+  max-width: 900px;
+  margin: 0 auto;
   min-height: 100vh;
 }
 
-#quiz-detailed-results {
-  max-width: 800px;
-  margin: 0 auto;
-  padding-bottom: 100px;
+/* Heading */
+h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
 }
 
+/* Results List */
 #quiz-detailed-results ol {
   list-style: none;
   padding: 0;
 }
 
 #quiz-detailed-results li {
-  margin-bottom: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 5px solid #888;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
 }
 
+/* Correct & Incorrect */
+.correct-answer-item {
+  border-left-color: #2ecc71;
+  background: rgba(46, 204, 113, 0.1);
+}
+
+.incorrect-answer-item {
+  border-left-color: #e74c3c;
+  background: rgba(231, 76, 60, 0.1);
+}
+
+.feedback-text {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.correct-answer-item .feedback-text {
+  color: #2ecc71;
+}
+
+.incorrect-answer-item .feedback-text {
+  color: #e74c3c;
+}
+
+/* Buttons Container */
 .button-container {
   position: fixed;
   bottom: 0;
@@ -44,19 +105,25 @@ body {
   justify-content: center;
   gap: 20px;
   padding: 20px;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: 5;
 }
 
+/* Action Buttons */
 .leaderboard-button {
-  padding: 12px 24px;
-  background: linear-gradient(135deg, #9999ff, #6633ff);
-  color: white;
-  text-decoration: none;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #ff00cc, #3333ff);
+  color: #fff;
   border-radius: 8px;
   font-weight: bold;
+  text-decoration: none;
+  box-shadow: 0 0 15px rgba(255, 0, 204, 0.4);
   transition: all 0.3s ease;
 }
 
 .leaderboard-button:hover {
-  background: linear-gradient(135deg, #8888ff, #4422ff);
+  background: linear-gradient(135deg, #dd00ff, #2200ff);
   transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(255, 0, 204, 0.6);
 }

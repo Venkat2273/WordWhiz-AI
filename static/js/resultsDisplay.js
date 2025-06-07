@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } else {
       detailedResultsContainer.innerHTML =
-        '<p>No quiz results found. <a href="/leaderboard">Please complete the quiz first!</a></p>';
+        '<p>No quiz results found. <a href="/">Please complete the quiz first!</a></p>';
     }
   }
 });

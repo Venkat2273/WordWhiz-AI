@@ -120,7 +120,6 @@ function selectCourse(courseKey) {
   };
 
   selectedCourse = courseMap[courseKey];
-  console.log("selected course is: ", selectedCourse);
   const subjects = subjectMap[selectedCourse] || [];
 
   document.getElementById("step-2").style.display = "none";
@@ -234,62 +233,116 @@ function showQuestion() {
   });
 }
 function selectAnswer(option) {
-  userAnswers.push({
-    questionText: questionsList[currentQuestionIndex].clue,
-    selected: option,
-    correct: questionsList[currentQuestionIndex].answer,
-  });
+    userAnswers.push({
+        questionText: questionsList[currentQuestionIndex].clue,
+        selected: option,
+        correct: questionsList[currentQuestionIndex].answer,
+    });
 
-  // If all 10 questions are answered
-  if (userAnswers.length >= 10) {
-    // Calculate score
-    const correct = userAnswers.filter((a) => a.selected === a.correct).length;
-    const score = correct * 10;
+    // If all 10 questions are answered
+    if (userAnswers.length >= 10) {
+        // Calculate score
+        const correct = userAnswers.filter((a) => a.selected === a.correct).length;
+        const score = correct * 10;
 
-    // Clear question area and show submit button
-    const quizArea = document.getElementById("quiz-area");
-    quizArea.innerHTML = `
+        // Store results and score in localStorage
+        localStorage.setItem("quizResults", JSON.stringify(userAnswers));
+        localStorage.setItem("quizScore", score.toString());
+
+        // Clear question area and show view results button
+        const quizArea = document.getElementById("quiz-area");
+        quizArea.innerHTML = `
             <h2>Quiz Complete!</h2>
             <div class="quiz-summary">
                 <p>You have completed all 10 questions.</p>
                 <p>Click the button below to see your results:</p>
             </div>
-            <button onclick="submitQuiz()" class="submit-button">View Results</button>
+            <button onclick="viewResults()" class="submit-button">View Results</button>
         `;
-  } else if (currentQuestionIndex + 1 < questionsList.length) {
-    // Show next question
-    currentQuestionIndex++;
-    showQuestion();
-  }
+    } else if (currentQuestionIndex + 1 < questionsList.length) {
+        // Show next question
+        currentQuestionIndex++;
+        showQuestion();
+    }
 }
 
-// Add new function to handle quiz submission
-function submitQuiz() {
-  // Store the quiz results
-  localStorage.setItem("quizResults", JSON.stringify(userAnswers));
-  // Redirect to results page
-  window.location.href = "/result";
+function viewResults() {
+    // Navigate to results page
+    window.location.href = "/result";
 }
-function submitToLeaderboard(score) {
-  const username = localStorage.getItem("username") || "Anonymous";
 
-  fetch("/submit_score", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name: username,
-      score: score,
-      course: selectedCourse,
-      difficulty: selectedDifficulty,
-    }),
-  }).then(() => {
-    window.location.href = "/leaderboard";
-  });
+// Add this function to your results page JavaScript
+function submitToLeaderboardFromResults() {
+    const score = parseInt(localStorage.getItem("quizScore"));
+    let username = localStorage.getItem("username");
+    const course = localStorage.getItem("selectedCourse");
+    const difficulty = localStorage.getItem("selectedDifficulty");
+
+    console.log("Submitting score with data:", { score, username, course, difficulty });
+
+    // Validate data before sending
+    if (!score || isNaN(score)) {
+        alert("Invalid score data");
+        return;
+    }
+    
+    // Make sure we have a username
+    if (!username || username.trim() === "") {
+        username = prompt("Please enter your name for the leaderboard:", "Anonymous");
+        if (!username) username = "Anonymous";
+        localStorage.setItem("username", username);
+    }
+    
+    if (!course || !difficulty) {
+        alert("Missing course or difficulty data");
+        return;
+    }
+
+    // Debug log
+    console.log("Sending data to server:", {
+        name: username,
+        score: score,
+        course: course,
+        difficulty: difficulty
+    });
+
+    fetch("/submit_score", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            name: username,
+            score: score,
+            course: course,
+            difficulty: difficulty,
+        }),
+    })
+    .then(response => {
+        console.log("Server response status:", response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log("Server response data:", data);
+        if (data.success) {
+            // Clear localStorage after successful submission
+            localStorage.removeItem("quizResults");
+            localStorage.removeItem("quizScore");
+            localStorage.removeItem("selectedCourse");
+            localStorage.removeItem("selectedDifficulty");
+            // Keep username in localStorage for future quizzes
+            
+            // Redirect to leaderboard
+            window.location.href = "/leaderboard";
+        } else {
+            alert("Failed to submit score: " + (data.error || "Unknown error"));
+        }
+    })
+    .catch(error => {
+        console.error("Error submitting score:", error);
+        alert("Error submitting score. Please try again.");
+    });
 }
-// Remove or comment out the showResult function as it's no longer needed
-// function showResult() { ... }
 let correct = userAnswers.filter((a) => a.selected === a.correct).length;
 let total = userAnswers.length;
 // alert(`Quiz Completed! \nCorrect Answers: ${correct}/${total}`);
